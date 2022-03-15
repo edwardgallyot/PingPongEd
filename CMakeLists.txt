@@ -79,8 +79,19 @@ juce_generate_juce_header(${projectName})
 
 target_sources(${projectName}
     PRIVATE
-        PluginEditor.cpp
-        PluginProcessor.cpp)
+        PingPongEdEditor.cpp
+        PingPongEdProcessor.cpp
+        BaseProcessor.cpp
+        BaseProcessor.h
+        PingPongEdButton.cpp
+        PingPongEdButton.h
+        PingPongEdSlider.cpp
+        PingPongEdSlider.h
+        SliderBank.cpp
+        SliderBank.h
+        ButtonBank.cpp
+        ButtonBank.h
+        id_name_vts.h)
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
 # project, these might be passed in the 'Preprocessor Definitions' field. JUCE modules also make use
