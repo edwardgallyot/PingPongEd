@@ -22,6 +22,9 @@ void DelayModule::prepare (double sampleRate, int maximumExpectedSamplesPerBlock
     }
 
     m_ms = sampleRate / 1000.0f;
+
+    wowTable.setFrequency (2.0f, sampleRate);
+    flutterTable.setFrequency (100.0f, sampleRate);
 }
 void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages,
                            std::vector<std::atomic<float>*>& parameters)
@@ -30,6 +33,8 @@ void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
 
     for (auto sample = 0; sample < buffer.getNumSamples (); ++sample)
     {
+
+
         auto inLeft = buffer.getSample (0, sample);
         auto inRight = buffer.getSample (0, sample);
 

@@ -8,6 +8,7 @@
 #include "CircularBuffer.h"
 #include <JuceHeader.h>
 #include "id_name_vts.h"
+#include "CosTable.h"
 
 class DelayModule
 {
@@ -33,11 +34,13 @@ private:
     CircularBuffer<float> circularBuffer {44100 * 6};
     double m_sampleRate {0.0f};
     int m_samplesPerBlock {0};
-    float writeHeadLeft{0.0f};
-    float writeHeadRight{0.0f};
-    float readHeadLeft{0.0f};
-    float readHeadRight{0.0f};
-    float m_ms{0.0f};
+    float writeHeadLeft {0.0f};
+    float writeHeadRight {0.0f};
+    float readHeadLeft {0.0f};
+    float readHeadRight {0.0f};
+    float m_ms {0.0f};
+    CosTable<float> wowTable{100000};
+    CosTable<float> flutterTable{100000};
 };
 
 
