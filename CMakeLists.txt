@@ -91,6 +91,17 @@ target_sources(${projectName}
         SliderBank.h
         ButtonBank.cpp
         ButtonBank.h
+        Interpolate.h
+        GainModule.cpp
+        GainModule.h
+        HighPassModule.cpp
+        HighPassModule.h
+        LowPassModule.cpp
+        LowPassModule.h
+        DelayModule.cpp
+        DelayModule.h
+        CircularBuffer.cpp
+        CircularBuffer.h
         id_name_vts.h)
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
@@ -126,6 +137,7 @@ target_link_libraries(${projectName}
     PRIVATE
         # AudioPluginData           # If we'd created a binary data target, we'd link to it here
         juce::juce_audio_utils
+        juce::juce_dsp
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags

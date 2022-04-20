@@ -18,12 +18,12 @@ PingPongEdProcessor::PingPongEdProcessor ()
                       createParameterLayout ()
           )
 {
-    m_left = parameters.getRawParameterValue (PPE_ID_LEFT);
-    m_right = parameters.getRawParameterValue (PPE_ID_RIGHT);
-    m_link = parameters.getRawParameterValue (PPE_ID_LINK);
-    m_sync = parameters.getRawParameterValue (PPE_ID_SYNC);
-    m_feedback = parameters.getRawParameterValue (PPE_ID_FEEDBACK);
-
+    size_t i = 0;
+    for (const auto& id: m_ids)
+    {
+        m_parameters[i] = parameters.getRawParameterValue (id);
+        i++;
+    }
 }
 
 PingPongEdProcessor::~PingPongEdProcessor ()
@@ -39,6 +39,7 @@ void PingPongEdProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
+    delayModule.prepare (sampleRate, samplesPerBlock, m_parameters);
 }
 
 void PingPongEdProcessor::releaseResources ()
@@ -74,7 +75,13 @@ bool PingPongEdProcessor::isBusesLayoutSupported (const BusesLayout& layouts) co
 void PingPongEdProcessor::processBlock (juce::AudioBuffer<float>& buffer,
                                         juce::MidiBuffer& midiMessages)
 {
-    juce::ignoreUnused (midiMessages);
+    size_t i = 0;
+    for (const auto& id: m_ids)
+    {
+        m_parameters[i] = parameters.getRawParameterValue (id);
+        i++;
+    }
+//    juce::ignoreUnused (midiMessages);
 
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels = getTotalNumInputChannels ();
@@ -95,6 +102,10 @@ void PingPongEdProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
+
+    delayModule.setParameters (m_parameters);
+
+    delayModule.process (buffer, midiMessages, m_parameters);
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
@@ -128,7 +139,7 @@ void PingPongEdProcessor::setStateInformation (const void* data, int sizeInBytes
 juce::AudioProcessorValueTreeState::ParameterLayout PingPongEdProcessor::createParameterLayout ()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout params;
-    DBG(m_ids.size());
+    DBG(m_ids.size ());
 
     for (size_t i = 0; i < m_ids.size (); ++i)
     {

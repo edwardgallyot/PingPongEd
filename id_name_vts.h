@@ -6,6 +6,7 @@
 #define PINGPONGED_ID_NAME_VTS_H
 
 #define PPE_ID_TREE "PingPongEdTree"
+#define VTS_PARAMS_N 11
 
 #define PPE_ID_LEFT "leftRate"
 #define PPE_NAME_LEFT "Left"
@@ -72,5 +73,20 @@
 #define PPE_MIN_MIX  0.0f
 #define PPE_MAX_MIX 100.0f
 #define PPE_DEFAULT_MIX 50.0f
+
+enum DelayParameters
+{
+    Left = 0,
+    Right,
+    Link,
+    Sync,
+    Feedback,
+    Drive,
+    Hi_Cut,
+    Lo_Cut,
+    Flutter,
+    Wow,
+    Mix
+};
 
 #endif //PINGPONGED_ID_NAME_VTS_H
