@@ -6,7 +6,7 @@
 
 
 void DelayModule::prepare (double sampleRate, int maximumExpectedSamplesPerBlock,
-                           std::vector<std::atomic<float>*>& parameters)
+                           std::vector<std::atomic<float> *> &parameters)
 {
     m_samplesPerBlock = maximumExpectedSamplesPerBlock;
     m_sampleRate = sampleRate;
@@ -26,8 +26,9 @@ void DelayModule::prepare (double sampleRate, int maximumExpectedSamplesPerBlock
     wowTable.setFrequency (2.0f, sampleRate);
     flutterTable.setFrequency (100.0f, sampleRate);
 }
-void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages,
-                           std::vector<std::atomic<float>*>& parameters)
+
+void DelayModule::process (juce::AudioBuffer<float> &buffer, juce::MidiBuffer &midiMessages,
+                           std::vector<std::atomic<float> *> &parameters)
 {
     auto bufferSize = circularBuffer.getSize ();
 
@@ -44,15 +45,18 @@ void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
         auto currentMix = m_smoothedParameters[DelayParameters::Mix].getNextValue () / 100.0f;
         auto currentFeedback = m_smoothedParameters[DelayParameters::Feedback].getNextValue () / 100.0f;
 
-
         auto delaySampleLeft = circularBuffer.getSample (0, readHeadLeft);
         auto delaySampleRight = circularBuffer.getSample (1, readHeadRight);
 
+        auto wow = m_smoothedParameters[DelayParameters::Wow].getNextValue ();
+        auto flutter = m_smoothedParameters[DelayParameters::Flutter].getNextValue ();
 
-        circularBuffer.writeSample (0, static_cast<size_t>(writeHeadLeft),
-                                    inLeft + (currentFeedback * delaySampleRight));
-        circularBuffer.writeSample (1, static_cast<size_t>(writeHeadRight),
-                                    inRight + (currentFeedback * delaySampleLeft));
+        circularBuffer.writeSample (
+                0, static_cast<size_t>(writeHeadLeft),
+                inLeft + (currentFeedback * delaySampleRight));
+        circularBuffer.writeSample (
+                1, static_cast<size_t>(writeHeadRight),
+                inRight + (currentFeedback * delaySampleLeft));
 
         readHeadLeft = fmod (
                 bufferSize - m_smoothedParameters[DelayParameters::Left].getNextValue () * m_ms + writeHeadLeft,
@@ -74,7 +78,8 @@ void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
 
     }
 }
-void DelayModule::setParameters (std::vector<std::atomic<float>*>& m_parameters)
+
+void DelayModule::setParameters (std::vector<std::atomic<float> *> &m_parameters)
 {
     for (size_t i = 0; i < VTS_PARAMS_N; ++i)
     {

@@ -28,13 +28,13 @@ add_compile_definitions(DONT_SET_USING_JUCE_NAMESPACE)
 list(APPEND CMAKE_PREFIX_PATH "/home/edgallyot/JUCE/cmake-build-install")
 
 
-#find_package(JUCE CONFIG REQUIRED)        # If you've installed JUCE to your system
+find_package(JUCE CONFIG REQUIRED)        # If you've installed JUCE to your system
 # or
 #MAC
 #add_subdirectory(/Users/edwardgallyot/JUCE bin)                  
 
 #LINUX
-add_subdirectory(/home/edgallyot/JUCE bin)
+#add_subdirectory(/home/edgallyot/JUCE bin)
 # If you are building a VST2 or AAX plugin, CMake needs to be told where to find these SDKs on your
 # system. This setup should be done before calling `juce_add_plugin`.
 
