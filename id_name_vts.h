@@ -23,7 +23,7 @@
 #define PPE_ID_DRIVE "drive"
 #define PPE_NAME_DRIVE "Drive"
 #define PPE_MIN_DRIVE 0.0f
-#define PPE_MAX_DRIVE 11.0f
+#define PPE_MAX_DRIVE 1.0f
 #define PPE_DEFAULT_DRIVE 0.0f
 
 #define PPE_ID_FEEDBACK "feedback"
@@ -70,8 +70,8 @@ enum DelayParameters
     Drive,
     Hi_Cut,
     Lo_Cut,
-    Flutter,
     Wow,
+    Flutter,
     Mix
 };
 

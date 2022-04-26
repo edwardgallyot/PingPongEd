@@ -42,6 +42,7 @@ void PingPongEdProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
     delayModule.prepare (sampleRate, samplesPerBlock, m_parameters);
+    cubicModule.prepare(sampleRate, samplesPerBlock);
 }
 
 void PingPongEdProcessor::releaseResources ()
@@ -83,7 +84,7 @@ void PingPongEdProcessor::processBlock (juce::AudioBuffer<float> &buffer,
         m_parameters[i] = parameters.getRawParameterValue (id);
         i++;
     }
-//    juce::ignoreUnused (midiMessages);
+    juce::ignoreUnused (midiMessages);
 
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels = getTotalNumInputChannels ();
@@ -106,14 +107,9 @@ void PingPongEdProcessor::processBlock (juce::AudioBuffer<float> &buffer,
     // interleaved by keeping the same state.
 
     delayModule.setParameters (m_parameters);
-
     delayModule.process (buffer, midiMessages, m_parameters);
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto *channelData = buffer.getWritePointer (channel);
-        juce::ignoreUnused (channelData);
-        // ..do something to the data...
-    }
+    cubicModule.process(buffer, midiMessages, m_parameters[DelayParameters::Drive]->load());
+    // TODO : Split Buffer in Two so tone modules can be implemented and mix is in main processor
 }
 
 

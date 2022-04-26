@@ -55,6 +55,7 @@ private:
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout ();
 
     DelayModule delayModule;
+    CubicModule cubicModule;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PingPongEdProcessor)

@@ -9,6 +9,7 @@
 #include <JuceHeader.h>
 #include "id_name_vts.h"
 #include "CosTable.h"
+#include "CubicModule.h"
 
 class DelayModule
 {
@@ -29,7 +30,7 @@ private:
                                                                            {0.0f},
                                                                            {0.0f},
                                                                            {0.0f}};
-    CircularBuffer<float> circularBuffer {44100 * 6};
+    CircularBuffer<float> circularBuffer {44100 * 10};
     double m_sampleRate {0.0f};
     int m_samplesPerBlock {0};
     float writeHeadLeft {0.0f};
@@ -39,6 +40,10 @@ private:
     float m_ms {0.0f};
     CosTable<float> wowTable{100000};
     CosTable<float> flutterTable{100000};
+    CubicModule cubicModule;
+
+
+    size_t m_t;
 
 
 };

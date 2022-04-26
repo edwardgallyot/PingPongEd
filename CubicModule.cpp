@@ -8,7 +8,7 @@ void CubicModule::prepare (double sampleRate, int maximumExpectedSamplesPerBlock
 {
     smoothedValue.reset (sampleRate, 0.0005);
 }
-void CubicModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages, float& drive)
+void CubicModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages, float drive)
 {
     smoothedValue.setTargetValue (drive);
     for (auto sample = 0; sample < buffer.getNumSamples (); ++sample)
