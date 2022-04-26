@@ -28,8 +28,6 @@ private:
                                                                            {0.0f},
                                                                            {0.0f},
                                                                            {0.0f},
-                                                                           {0.0f},
-                                                                           {0.0f},
                                                                            {0.0f}};
     CircularBuffer<float> circularBuffer {44100 * 6};
     double m_sampleRate {0.0f};
@@ -41,6 +39,8 @@ private:
     float m_ms {0.0f};
     CosTable<float> wowTable{100000};
     CosTable<float> flutterTable{100000};
+
+
 };
 
 

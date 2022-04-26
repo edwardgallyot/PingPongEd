@@ -5,21 +5,23 @@
 
 //==============================================================================
 PingPongEdProcessor::PingPongEdProcessor ()
-        : AudioProcessor (BusesProperties ()
+        : AudioProcessor (
+        BusesProperties ()
 #if !JucePlugin_IsMidiEffect
 #if !JucePlugin_IsSynth
-                                  .withInput ("Input", juce::AudioChannelSet::stereo (), true)
+                .withInput ("Input", juce::AudioChannelSet::stereo (), true)
 #endif
-                                  .withOutput ("Output", juce::AudioChannelSet::stereo (), true)
+                .withOutput ("Output", juce::AudioChannelSet::stereo (), true)
 #endif
 ),
 
-          parameters (*this, nullptr, juce::Identifier (PPE_ID_TREE),
-                      createParameterLayout ()
+          parameters (
+                  *this, nullptr, juce::Identifier (PPE_ID_TREE),
+                  createParameterLayout ()
           )
 {
     size_t i = 0;
-    for (const auto& id: m_ids)
+    for (const auto &id : m_ids)
     {
         m_parameters[i] = parameters.getRawParameterValue (id);
         i++;
@@ -48,7 +50,7 @@ void PingPongEdProcessor::releaseResources ()
     // spare memory, etc.
 }
 
-bool PingPongEdProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool PingPongEdProcessor::isBusesLayoutSupported (const BusesLayout &layouts) const
 {
 #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -72,11 +74,11 @@ bool PingPongEdProcessor::isBusesLayoutSupported (const BusesLayout& layouts) co
 #endif
 }
 
-void PingPongEdProcessor::processBlock (juce::AudioBuffer<float>& buffer,
-                                        juce::MidiBuffer& midiMessages)
+void PingPongEdProcessor::processBlock (juce::AudioBuffer<float> &buffer,
+                                        juce::MidiBuffer &midiMessages)
 {
     size_t i = 0;
-    for (const auto& id: m_ids)
+    for (const auto &id : m_ids)
     {
         m_parameters[i] = parameters.getRawParameterValue (id);
         i++;
@@ -108,27 +110,27 @@ void PingPongEdProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     delayModule.process (buffer, midiMessages, m_parameters);
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        auto *channelData = buffer.getWritePointer (channel);
         juce::ignoreUnused (channelData);
         // ..do something to the data...
     }
 }
 
 
-juce::AudioProcessorEditor* PingPongEdProcessor::createEditor ()
+juce::AudioProcessorEditor *PingPongEdProcessor::createEditor ()
 {
     return new PingPongEdEditor (*this, parameters);
 }
 
 //==============================================================================
-void PingPongEdProcessor::getStateInformation (juce::MemoryBlock& destData)
+void PingPongEdProcessor::getStateInformation (juce::MemoryBlock &destData)
 {
     auto state = parameters.copyState ();
     std::unique_ptr<juce::XmlElement> xml (state.createXml ());
     copyXmlToBinary (*xml, destData);
 }
 
-void PingPongEdProcessor::setStateInformation (const void* data, int sizeInBytes)
+void PingPongEdProcessor::setStateInformation (const void *data, int sizeInBytes)
 {
     std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
@@ -136,6 +138,7 @@ void PingPongEdProcessor::setStateInformation (const void* data, int sizeInBytes
         if (xmlState->hasTagName (parameters.state.getType ()))
             parameters.replaceState (juce::ValueTree::fromXml (*xmlState));
 }
+
 juce::AudioProcessorValueTreeState::ParameterLayout PingPongEdProcessor::createParameterLayout ()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout params;
@@ -143,27 +146,20 @@ juce::AudioProcessorValueTreeState::ParameterLayout PingPongEdProcessor::createP
 
     for (size_t i = 0; i < m_ids.size (); ++i)
     {
-        if (i == 2 || i == 3)
-        {
-            params.add (std::make_unique<juce::AudioParameterBool> (m_ids[i],
-                                                                    m_names[i],
-                                                                    m_defaults[i]
-            ));
-        } else
-        {
-            params.add (std::make_unique<juce::AudioParameterFloat> (m_ids[i],
-                                                                     m_names[i],
-                                                                     m_minimums[i],
-                                                                     m_maxes[i],
-                                                                     m_defaults[i]));
-        }
+        params.add (
+                std::make_unique<juce::AudioParameterFloat> (
+                        m_ids[i],
+                        m_names[i],
+                        m_minimums[i],
+                        m_maxes[i],
+                        m_defaults[i]));
     }
     return params;
 }
 
 //==============================================================================
 // This creates new instances of the plugin..
-juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter ()
+juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter ()
 {
     return new PingPongEdProcessor ();
 }

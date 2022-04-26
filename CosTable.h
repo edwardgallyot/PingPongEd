@@ -15,7 +15,7 @@ class CosTable
 {
 public:
     explicit CosTable (size_t size)
-            : max_index (size - 1), size (size)
+            : max_index (size - 1), m_size (size)
     {
         data = new T[size];
         auto delta = juce::MathConstants<float>::twoPi / static_cast<float>(size);
@@ -29,15 +29,15 @@ public:
 
     void setFrequency (float frequency, float sampleRate)
     {
-        auto tableSizeOverSampleRate = static_cast<float>(size) / sampleRate;
+        auto tableSizeOverSampleRate = static_cast<float>(m_size) / sampleRate;
         tableDelta = frequency * tableSizeOverSampleRate;
     }
 
     float getNextSample ()
     {
-        auto sample = interpolate_mod<float> (currentIndex, data, size);
+        auto sample = interpolate_mod<float> (currentIndex, data, m_size);
         currentIndex += tableDelta;
-        currentIndex = std::fmod (currentIndex, static_cast<float>(size));
+        currentIndex = std::fmod (currentIndex, static_cast<float>(m_size));
         return sample;
     }
 
@@ -52,7 +52,7 @@ public:
     }
 private:
     T* data;
-    size_t size;
+    size_t m_size;
     size_t max_index;
     float tableDelta;
     float currentIndex {0.0f};

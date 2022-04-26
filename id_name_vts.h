@@ -6,7 +6,7 @@
 #define PINGPONGED_ID_NAME_VTS_H
 
 #define PPE_ID_TREE "PingPongEdTree"
-#define VTS_PARAMS_N 11
+#define VTS_PARAMS_N 9
 
 #define PPE_ID_LEFT "leftRate"
 #define PPE_NAME_LEFT "Left"
@@ -19,18 +19,6 @@
 #define PPE_MIN_RIGHT 0.0f
 #define PPE_MAX_RIGHT 3000.0f
 #define PPE_DEFAULT_RIGHT 0.0f
-
-#define PPE_ID_LINK "leftRightLink"
-#define PPE_NAME_LINK "Link"
-#define PPE_MIN_LINK 0.0f
-#define PPE_MAX_LINK 1.0f
-#define PPE_DEFAULT_LINK 1.0f
-
-#define PPE_ID_SYNC "tempoSync"
-#define PPE_NAME_SYNC "Sync"
-#define PPE_MIN_SYNC 0.0f
-#define PPE_MAX_SYNC 1.0f
-#define PPE_DEFAULT_SYNC 1.0f
 
 #define PPE_ID_DRIVE "drive"
 #define PPE_NAME_DRIVE "Drive"
@@ -78,8 +66,6 @@ enum DelayParameters
 {
     Left = 0,
     Right,
-    Link,
-    Sync,
     Feedback,
     Drive,
     Hi_Cut,

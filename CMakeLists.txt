@@ -103,6 +103,8 @@ target_sources(${projectName}
         CircularBuffer.cpp
         CircularBuffer.h
         CosTable.h
+        CubicModule.cpp
+        CubicModule.h
 
         id_name_vts.h)
 

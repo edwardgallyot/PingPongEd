@@ -45,11 +45,13 @@ void DelayModule::process (juce::AudioBuffer<float> &buffer, juce::MidiBuffer &m
         auto currentMix = m_smoothedParameters[DelayParameters::Mix].getNextValue () / 100.0f;
         auto currentFeedback = m_smoothedParameters[DelayParameters::Feedback].getNextValue () / 100.0f;
 
-        auto delaySampleLeft = circularBuffer.getSample (0, readHeadLeft);
-        auto delaySampleRight = circularBuffer.getSample (1, readHeadRight);
+        //auto wow = wowTable.getNextSample();
+        auto flutter = m_smoothedParameters[DelayParameters::Flutter].getNextValue ();
 
         auto wow = m_smoothedParameters[DelayParameters::Wow].getNextValue ();
-        auto flutter = m_smoothedParameters[DelayParameters::Flutter].getNextValue ();
+
+        auto delaySampleLeft = circularBuffer.getSample (0, readHeadLeft);
+        auto delaySampleRight = circularBuffer.getSample (1, readHeadRight);
 
         circularBuffer.writeSample (
                 0, static_cast<size_t>(writeHeadLeft),
@@ -72,6 +74,8 @@ void DelayModule::process (juce::AudioBuffer<float> &buffer, juce::MidiBuffer &m
 
         auto outLeft = currentMix * delaySampleLeft + (1 - currentMix) * inLeft;
         auto outRight = currentMix * delaySampleRight + (1 - currentMix) * inRight;
+
+
 
         buffer.setSample (0, sample, outLeft);
         buffer.setSample (1, sample, outRight);
