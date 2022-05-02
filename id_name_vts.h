@@ -34,15 +34,15 @@
 
 #define PPE_ID_HICUT "hiCut"
 #define PPE_NAME_HICUT "High Cut"
-#define PPE_MIN_HICUT 0.0f
-#define PPE_MAX_HICUT 20000.0f
-#define PPE_DEFAULT_HICUT 20000.0f
+#define PPE_MIN_HICUT 1.0f
+#define PPE_MAX_HICUT 1000.0f
+#define PPE_DEFAULT_HICUT 1.0f
 
 #define PPE_ID_LOCUT "loCut"
 #define PPE_NAME_LOCUT "Low Cut"
-#define PPE_MIN_LOCUT 0.0f
+#define PPE_MIN_LOCUT 1000.0f
 #define PPE_MAX_LOCUT 20000.0f
-#define PPE_DEFAULT_LOCUT 0.0f
+#define PPE_DEFAULT_LOCUT 20000.0f
 
 #define PPE_ID_WOW "wow"
 #define PPE_NAME_WOW "Wow"

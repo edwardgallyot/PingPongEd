@@ -105,7 +105,6 @@ target_sources(${projectName}
         CosTable.h
         CubicModule.cpp
         CubicModule.h
-
         id_name_vts.h)
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer

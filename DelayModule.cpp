@@ -28,7 +28,7 @@ void DelayModule::prepare (double sampleRate, int maximumExpectedSamplesPerBlock
     wowTable.setFrequency (2.0f, sampleRate);
     flutterTable.setFrequency (20.0f, sampleRate);
 
-    cubicModule.prepare(sampleRate, maximumExpectedSamplesPerBlock);
+    cubicModule.prepare (sampleRate, maximumExpectedSamplesPerBlock);
 }
 
 void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages,
@@ -40,10 +40,8 @@ void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
     {
 
 
-
-
         auto inLeft = buffer.getSample (0, sample);
-        auto inRight = buffer.getSample (0, sample);
+        auto inRight = buffer.getSample (1, sample);
 
         auto leftDelayTime = m_smoothedParameters[DelayParameters::Left].getNextValue ();
         auto rightDelayTime = m_smoothedParameters[DelayParameters::Right].getNextValue ();
@@ -58,10 +56,10 @@ void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
         auto flutter =
                 flutterAmount * std::sin (juce::MathConstants<float>::twoPi * (27.5675f / m_sampleRate) * m_t) + 1.0f;
 
-        auto leftIndex = fmod (readHeadLeft * wow * flutter - wowAmount - flutterAmount,
-                                static_cast<float>(bufferSize));
-        auto rightIndex = fmod (readHeadRight * wow * flutter - wowAmount - flutterAmount,
-                                static_cast<float>(bufferSize));
+        auto leftIndex = fmod ((readHeadLeft * wow * flutter) - wowAmount - flutterAmount,
+                               static_cast<float>(bufferSize - 1.0f));
+        auto rightIndex = fmod ((readHeadRight * wow * flutter) - wowAmount - flutterAmount,
+                                static_cast<float>(bufferSize - 1.0f ));
 
 
         auto delaySampleLeft = circularBuffer.getSample (0, leftIndex);
@@ -75,27 +73,25 @@ void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
                 1, static_cast<size_t>(writeHeadRight),
                 inRight + (currentFeedback * delaySampleLeft));
 
-        readHeadLeft = fmod (
-                bufferSize - m_smoothedParameters[DelayParameters::Left].getNextValue () * m_ms + writeHeadLeft,
+        readHeadLeft = std::fmod (
+                bufferSize - (m_smoothedParameters[DelayParameters::Left].getNextValue () * m_ms) + writeHeadLeft,
                 static_cast<float>(bufferSize));
-        readHeadRight = fmod (
-                bufferSize - m_smoothedParameters[DelayParameters::Right].getNextValue () * m_ms + writeHeadRight,
+        readHeadRight = std::fmod (
+                bufferSize - (m_smoothedParameters[DelayParameters::Right].getNextValue () * m_ms) + writeHeadRight,
                 static_cast<float>(bufferSize));
 
         writeHeadLeft += 1.0f;
         writeHeadRight += 1.0f;
-        writeHeadLeft = std::fmod (writeHeadLeft, static_cast<float>(bufferSize));
-        writeHeadRight = std::fmod (writeHeadRight, static_cast<float>(bufferSize));
+        writeHeadLeft = std::fmod (writeHeadLeft, static_cast<float>(bufferSize - 1.0f));
+        writeHeadRight = std::fmod (writeHeadRight, static_cast<float>(bufferSize - 1.0f));
 
         auto outLeft = delaySampleLeft;
         auto outRight = delaySampleRight;
 
-        // TODO: Move Mix to main Block
-
         buffer.setSample (0, sample, outLeft);
         buffer.setSample (1, sample, outRight);
 
-        if (m_t == 44100)
+        if (m_t == 88200)
             m_t = 0;
 
     }
