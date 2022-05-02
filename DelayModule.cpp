@@ -40,13 +40,14 @@ void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
     {
 
 
+
+
         auto inLeft = buffer.getSample (0, sample);
         auto inRight = buffer.getSample (0, sample);
 
         auto leftDelayTime = m_smoothedParameters[DelayParameters::Left].getNextValue ();
         auto rightDelayTime = m_smoothedParameters[DelayParameters::Right].getNextValue ();
 
-        auto currentMix = m_smoothedParameters[DelayParameters::Mix].getNextValue () / 100.0f;
         auto currentFeedback = m_smoothedParameters[DelayParameters::Feedback].getNextValue () / 100.0f;
 
 
@@ -86,8 +87,8 @@ void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
         writeHeadLeft = std::fmod (writeHeadLeft, static_cast<float>(bufferSize));
         writeHeadRight = std::fmod (writeHeadRight, static_cast<float>(bufferSize));
 
-        auto outLeft = currentMix * delaySampleLeft + (1 - currentMix) * inLeft;
-        auto outRight = currentMix * delaySampleRight + (1 - currentMix) * inRight;
+        auto outLeft = delaySampleLeft;
+        auto outRight = delaySampleRight;
 
         // TODO: Move Mix to main Block
 

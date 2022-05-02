@@ -17,6 +17,11 @@ public:
         m_data = new T* [2];
         m_data[0] = new T[size];
         m_data[1] = new T[size];
+
+        for (size_t i = 0; i < size; ++i){
+            m_data[0][i] = 0.0f;
+            m_data[1][i] = 0.0f;
+        }
     };
 
     void writeSample (int channel, size_t position, T sample)

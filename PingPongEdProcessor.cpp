@@ -42,7 +42,11 @@ void PingPongEdProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
     delayModule.prepare (sampleRate, samplesPerBlock, m_parameters);
-    cubicModule.prepare(sampleRate, samplesPerBlock);
+    cubicModule.prepare (sampleRate, samplesPerBlock);
+    mix.reset (sampleRate, 0.005);
+
+    lowPassModule.prepare (sampleRate, samplesPerBlock, getTotalNumOutputChannels ());
+    highPassModule.prepare (sampleRate, samplesPerBlock, getTotalNumOutputChannels ());
 }
 
 void PingPongEdProcessor::releaseResources ()
@@ -78,6 +82,7 @@ bool PingPongEdProcessor::isBusesLayoutSupported (const BusesLayout &layouts) co
 void PingPongEdProcessor::processBlock (juce::AudioBuffer<float> &buffer,
                                         juce::MidiBuffer &midiMessages)
 {
+    mix.setTargetValue (m_parameters[DelayParameters::Mix]->load ());
     size_t i = 0;
     for (const auto &id : m_ids)
     {
@@ -106,9 +111,32 @@ void PingPongEdProcessor::processBlock (juce::AudioBuffer<float> &buffer,
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
 
+    auto bufferDry = buffer;
+
+    //currentMix * delaySampleLeft + (1 - currentMix) * inLeft
+
     delayModule.setParameters (m_parameters);
     delayModule.process (buffer, midiMessages, m_parameters);
-    cubicModule.process(buffer, midiMessages, m_parameters[DelayParameters::Drive]->load());
+    cubicModule.process (buffer, midiMessages, m_parameters[DelayParameters::Drive]->load ());
+
+    auto lowCut = m_parameters[DelayParameters::Lo_Cut]->load ();
+    auto hiCut = m_parameters[DelayParameters::Hi_Cut]->load ();
+
+    lowPassModule.process (buffer, midiMessages, lowCut);
+    highPassModule.process (buffer, midiMessages, hiCut);
+
+    for (auto sample = 0; sample < buffer.getNumChannels (); ++sample)
+    {
+        for (auto channel = 0; channel < buffer.getNumChannels (); ++channel)
+        {
+            auto dry = bufferDry.getSample (channel, sample);
+            auto wet = buffer.getSample (channel, sample);
+            auto mix_a = mix.getNextValue () / 100.0f;
+            auto out = mix_a * wet + (1 - mix_a) * dry;
+            buffer.setSample (channel, sample, out);
+        }
+    }
+
     // TODO : Split Buffer in Two so tone modules can be implemented and mix is in main processor
 }
 
