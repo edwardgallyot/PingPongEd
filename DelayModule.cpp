@@ -82,8 +82,8 @@ void DelayModule::process (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& m
 
         writeHeadLeft += 1.0f;
         writeHeadRight += 1.0f;
-        writeHeadLeft = std::fmod (writeHeadLeft, static_cast<float>(bufferSize - 1.0f));
-        writeHeadRight = std::fmod (writeHeadRight, static_cast<float>(bufferSize - 1.0f));
+        writeHeadLeft = std::fmod (writeHeadLeft, static_cast<float>(bufferSize));
+        writeHeadRight = std::fmod (writeHeadRight, static_cast<float>(bufferSize));
 
         auto outLeft = delaySampleLeft;
         auto outRight = delaySampleRight;
